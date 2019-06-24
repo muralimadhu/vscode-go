@@ -302,7 +302,8 @@ export function toggleCoverageCurrentPackage() {
 		goConfig: goConfig,
 		dir: cwd,
 		flags: args,
-		background: true
+		background: true,
+		testScript: ''
 	};
 	return isModSupported(editor.document.uri).then(isMod => {
 		testConfig.isMod = isMod;

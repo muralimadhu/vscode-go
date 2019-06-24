@@ -91,7 +91,8 @@ async function runTestAtCursor(editor: vscode.TextEditor, testFunctionName: stri
 		flags: testFlags,
 		functions: testConfigFns,
 		isBenchmark: cmd === 'benchmark',
-		isMod
+		isMod,
+		testScript: goConfig.get('testScript')
 	};
 	// Remember this config as the last executed test.
 	lastTestConfig = testConfig;
@@ -140,6 +141,7 @@ export function testCurrentPackage(goConfig: vscode.WorkspaceConfiguration, isBe
 		dir: path.dirname(editor.document.fileName),
 		flags: testFlags,
 		isBenchmark: isBenchmark,
+		testScript: goConfig.get('testScript')
 	};
 	// Remember this config as the last executed test.
 	lastTestConfig = testConfig;
@@ -175,7 +177,8 @@ export function testWorkspace(goConfig: vscode.WorkspaceConfiguration, args: any
 		goConfig: goConfig,
 		dir: workspaceUri.fsPath,
 		flags: getTestFlags(goConfig, args),
-		includeSubDirectories: true
+		includeSubDirectories: true,
+		testScript: goConfig.get('testScript')
 	};
 	// Remember this config as the last executed test.
 	lastTestConfig = testConfig;
@@ -215,6 +218,7 @@ export function testCurrentFile(goConfig: vscode.WorkspaceConfiguration, isBench
 				flags: getTestFlags(goConfig, args),
 				functions: testFunctions.map(sym => sym.name),
 				isBenchmark: isBenchmark,
+				testScript: goConfig.get('testScript')
 			};
 			// Remember this config as the last executed test.
 			lastTestConfig = testConfig;

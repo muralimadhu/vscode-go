@@ -87,7 +87,8 @@ export function check(fileUri: vscode.Uri, goConfig: vscode.WorkspaceConfigurati
 		goConfig: goConfig,
 		dir: cwd,
 		flags: getTestFlags(goConfig),
-		background: true
+		background: true,
+		testScript: ''
 	};
 
 	const runTest = () => {

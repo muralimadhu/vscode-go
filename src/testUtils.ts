@@ -64,6 +64,11 @@ export interface TestConfig {
 	 * Whether the tests are being run in a project that uses Go modules
 	 */
 	isMod?: boolean;
+
+	/**
+	 * Runs a custom script passing in the test that needs to be run
+	 */
+	testScript: string;
 }
 
 export function getTestEnvVars(config: vscode.WorkspaceConfiguration): any {
@@ -258,8 +263,15 @@ export function goTest(testconfig: TestConfig): Thenable<boolean> {
 			args.push(...targets);
 			// ensure that user provided flags are appended last (allow use of -args ...)
 			args.push(...testconfig.flags);
-
-			const tp = cp.spawn(goRuntimePath, args, { env: testEnvVars, cwd: testconfig.dir });
+			
+			const testScript: string = testconfig.testScript;
+			let tp: cp.ChildProcess;
+			if (testScript) {
+				tp = cp.spawn(testScript, args, { env: testEnvVars, cwd: testconfig.dir });
+			}
+			else {
+				tp = cp.spawn(goRuntimePath, args, { env: testEnvVars, cwd: testconfig.dir });
+			}
 			const outBuf = new LineBuffer();
 			const errBuf = new LineBuffer();
 
