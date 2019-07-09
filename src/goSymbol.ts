@@ -80,8 +80,8 @@ export function getWorkspaceSymbols(workspacePath: string, query: string, token:
 	calls.push(callGoSymbols([...baseArgs, workspacePath, query], token));
 
 	if (gotoSymbolConfig.includeGoroot) {
-		const gorootCall = getGoroot()
-			.then(goRoot => callGoSymbols([...baseArgs, goRoot, query], token));
+		const goRoot = process.env['GOROOT'];
+		const gorootCall = callGoSymbols([...baseArgs, goRoot, query], token);
 		calls.push(gorootCall);
 	}
 
@@ -117,23 +117,6 @@ function callGoSymbols(args: string[], token: vscode.CancellationToken): Promise
 			const result = stdout.toString();
 			const decls = <GoSymbolDeclaration[]>JSON.parse(result);
 			return resolve(decls);
-		});
-	});
-}
-
-function getGoroot(): Promise<string> {
-	const goExecutable = getBinPath('go');
-	if (!goExecutable) {
-		return Promise.reject(new Error('Cannot find "go" binary. Update PATH or GOROOT appropriately'));
-	}
-	return new Promise((resolve, reject) => {
-		cp.execFile(goExecutable, ['env', 'GOROOT'], (err, stdout) => {
-			if (err) {
-				reject(err);
-				return;
-			}
-			const [goRoot] = stdout.split('\n');
-			resolve(goRoot.trim());
 		});
 	});
 }
